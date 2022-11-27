@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="false">
+    <!-- duration：表示間隔[msec]-->
+    <item android:drawable="@drawable/d3" android:duration="300" />
+    <item android:drawable="@drawable/d_" android:duration="300" />
+</animation-list>
