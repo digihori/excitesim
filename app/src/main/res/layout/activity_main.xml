@@ -15,12 +15,12 @@
         app:layout_constraintDimensionRatio="3:5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="32dp"
             tools:ignore="contentDescription">
 
             <ImageView
@@ -177,8 +177,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="32dp">
+                android:paddingRight="20dp" >
 
                 <TextView
                     android:layout_width="wrap_content"

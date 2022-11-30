@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.00",
-      "outputFile": "excitesim-1.00-release.apk"
+      "versionCode": 2,
+      "versionName": "1.01",
+      "outputFile": "excitesim-1.01-release.apk"
     }
   ],
   "elementType": "File"
