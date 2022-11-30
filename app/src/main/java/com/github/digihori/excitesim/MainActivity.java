@@ -1,6 +1,7 @@
 package com.github.digihori.excitesim;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -10,9 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Switch;
 
 import java.util.Random;
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private ResultNum digit;
     private ImageView imgView1, imgView2;
-    private Switch autoSW;
+    private SwitchCompat autoSW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,25 +91,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         autoSW = findViewById(R.id.switch1);
         autoSW.setTextColor(Color.GRAY);
         autoSW.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (autoSW.isChecked()) {
-                            auto = new Runnable() {
-                                @Override
-                                public void run() {
-                                    shuffle();
-                                    mHandler0.removeCallbacks(auto);
-                                    mHandler0.postDelayed(auto, 1500);
-                                }
-                            };
-                            autoSW.setTextColor(Color.RED);
+                (compoundButton, b) -> {
+                    if (autoSW.isChecked()) {
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        auto = () -> {
                             shuffle();
-                            mHandler0.postDelayed(auto, 1500);
-                        } else {
-                            autoSW.setTextColor(Color.GRAY);
                             mHandler0.removeCallbacks(auto);
-                        }
+                            mHandler0.postDelayed(auto, 1500);
+                        };
+                        autoSW.setTextColor(Color.RED);
+                        shuffle();
+                        mHandler0.postDelayed(auto, 1500);
+                    } else {
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        autoSW.setTextColor(Color.GRAY);
+                        mHandler0.removeCallbacks(auto);
                     }
                 }
         );
@@ -119,42 +115,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int x;
 
         Log.w("drawing", String.format("mode=%d", mode));
-        switch (mode) {
-            case 0: // 天国モード
-                x = random.nextInt(13);
+        if (mode == 0) {    // 天国モード
+            x = random.nextInt(13);
+            Log.w("drawing", String.format("result=%d", x));
+            if (x == 0) {
+                findViewById(tvIds[0]).setBackgroundColor(Color.WHITE);
+                mode = random.nextInt(8);
+                Log.w("drawing", String.format("next mode=%d", mode));
+                findViewById(tvIds[mode]).setBackgroundColor(Color.RED);
+                digit = reach();
+            } else {
+                x = random.nextInt(60);
                 Log.w("drawing", String.format("result=%d", x));
-                if (x == 0) {
-                    findViewById(tvIds[0]).setBackgroundColor(Color.WHITE);
-                    mode = random.nextInt(8);
-                    Log.w("drawing", String.format("next mode=%d", mode));
-                    findViewById(tvIds[mode]).setBackgroundColor(Color.RED);
-                    digit = reach();
-                } else {
-                    x = random.nextInt(60);
-                    Log.w("drawing", String.format("result=%d", x));
-                    if (x < 10) {
-                        digit = hit();
-                    } else if (x < 30) {
-                        digit = reach();
-                    } else {
-                        digit = failure();
-                    }
-                }
-                break;
-
-            default:    // 1-7 地獄モード
-                x = random.nextInt(13);
-                Log.w("drawing", String.format("result=%d", x));
-                if (x == 0) {
-                    findViewById(tvIds[mode]).setBackgroundColor(Color.WHITE);
-                    mode = random.nextInt(8);
-                    Log.w("drawing", String.format("next mode=%d", mode));
-                    findViewById(tvIds[mode]).setBackgroundColor(Color.RED);
+                if (x < 10) {
+                    digit = hit();
+                } else if (x < 30) {
                     digit = reach();
                 } else {
                     digit = failure();
                 }
-                break;
+            }
+        } else {    // 1-7 地獄モード
+            x = random.nextInt(13);
+            Log.w("drawing", String.format("result=%d", x));
+            if (x == 0) {
+                findViewById(tvIds[mode]).setBackgroundColor(Color.WHITE);
+                mode = random.nextInt(8);
+                Log.w("drawing", String.format("next mode=%d", mode));
+                findViewById(tvIds[mode]).setBackgroundColor(Color.RED);
+                digit = reach();
+            } else {
+                digit = failure();
+            }
         }
     }
     private ResultNum hit() {
@@ -194,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return r;
     }
-    private void digitDisp(ImageView v, int n) {
+    private void digitPrint(ImageView v, int n) {
         v.setBackgroundResource(digitImages[n]);
     }
 
@@ -210,48 +202,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (anime2.isRunning()) anime2.stop();
         anime2.start();
 
-        stop1 = new Runnable() {
-            @Override
-            public void run() {
-                if (anime1.isRunning()) {
-                    anime1.stop();
-                    digitDisp(imgView1, digit.d1);
-                    if (digit.d1 == 3 || digit.d1 == 7) {
-                        soundPool.play(soundReach, 1.0f, 1.0f, 0, 0, 1);
-                    } else {
-                        soundPool.play(soundNormal, 1.0f, 1.0f, 0, 0, 1);
-                    }
+        stop1 = () -> {
+            if (anime1.isRunning()) {
+                anime1.stop();
+                digitPrint(imgView1, digit.d1);
+                if (digit.d1 == 3 || digit.d1 == 7) {
+                    soundPool.play(soundReach, 1.0f, 1.0f, 0, 0, 1);
+                } else {
+                    soundPool.play(soundNormal, 1.0f, 1.0f, 0, 0, 1);
                 }
-                mHandler1.removeCallbacks(stop1);
             }
+            mHandler1.removeCallbacks(stop1);
         };
         mHandler1.postDelayed(stop1, 600);
-        stop2 = new Runnable() {
-            @Override
-            public void run() {
-                if (anime2.isRunning()) {
-                    anime2.stop();
-                    digitDisp(imgView2, digit.d2);
-                    if (digit.d1 == 3 && digit.d2 == 3 || digit.d1 == 7 && digit.d2 == 7) {
-                        soundPool.play(soundFanfare, 1.0f, 1.0f, 0, 0, 1);
-                        imgView1.setBackgroundResource(digit.d1 == 3 ? R.drawable.fever3 : R.drawable.fever7);
-                        imgView2.setBackgroundResource(digit.d1 == 3 ? R.drawable.fever3 : R.drawable.fever7);
-                        anime1 = (AnimationDrawable) imgView1.getBackground();
-                        anime2 = (AnimationDrawable) imgView2.getBackground();
-                        if (anime1.isRunning()) anime1.stop();
-                        anime1.start();
-                        if (anime2.isRunning()) anime2.stop();
-                        anime2.start();
-                        if (autoSW.isChecked()) {
-                            mHandler0.removeCallbacks(auto);
-                            mHandler0.postDelayed(auto, 4000);
-                        }
-                    } else {
-                        soundPool.play(soundNormal, 1.0f, 1.0f, 0, 0, 1);
+        stop2 = () -> {
+            if (anime2.isRunning()) {
+                anime2.stop();
+                digitPrint(imgView2, digit.d2);
+                if (digit.d1 == 3 && digit.d2 == 3 || digit.d1 == 7 && digit.d2 == 7) {
+                    soundPool.play(soundFanfare, 1.0f, 1.0f, 0, 0, 1);
+                    imgView1.setBackgroundResource(digit.d1 == 3 ? R.drawable.fever3 : R.drawable.fever7);
+                    imgView2.setBackgroundResource(digit.d1 == 3 ? R.drawable.fever3 : R.drawable.fever7);
+                    anime1 = (AnimationDrawable) imgView1.getBackground();
+                    anime2 = (AnimationDrawable) imgView2.getBackground();
+                    if (anime1.isRunning()) anime1.stop();
+                    anime1.start();
+                    if (anime2.isRunning()) anime2.stop();
+                    anime2.start();
+                    if (autoSW.isChecked()) {
+                        mHandler0.removeCallbacks(auto);
+                        mHandler0.postDelayed(auto, 4000);
                     }
+                } else {
+                    soundPool.play(soundNormal, 1.0f, 1.0f, 0, 0, 1);
                 }
-                mHandler2.removeCallbacks(stop2);
             }
+            mHandler2.removeCallbacks(stop2);
         };
         mHandler2.postDelayed(stop2, 900);
     }

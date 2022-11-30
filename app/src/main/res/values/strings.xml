@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">EXCITE Simulator</string>
+    <string name="mode1">1</string>
+    <string name="mode2">2</string>
+    <string name="mode3">3</string>
+    <string name="mode4">4</string>
+    <string name="mode5">5</string>
+    <string name="mode6">6</string>
+    <string name="mode7">7</string>
+    <string name="mode8">8</string>
+    <string name="fire">Shuffle</string>
+    <string name="sw">"Auto  "</string>
+    <string name="option">Option</string>
+    <string name="opt_heaven">Go to Heaven</string>
+    <string name="opt1">Sound 1</string>
+    <string name="opt2">Sound 2</string>
+    <string name="opt3">Sound 3</string>
+    <string name="opt4">Sound 4</string>
 </resources>
