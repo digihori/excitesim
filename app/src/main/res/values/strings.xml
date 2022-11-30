@@ -16,4 +16,11 @@
     <string name="opt2">Sound 2</string>
     <string name="opt3">Sound 3</string>
     <string name="opt4">Sound 4</string>
+    <string name="menu_about">about…</string>
+    <string name="about_title">Excite Simulator について</string>
+    <string name="about_body">
+        このアプリはアレパチ「Excite」のシミュレータです\n\n
+        PrivacyPolicy:\n
+        https://digihori-craft.jimdofree.com/privacypolicy/excitesim
+    </string>
 </resources>
