@@ -247,6 +247,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View v) {
+        int x = v.getId();
+        if (x == R.id.btn1) {
+            shuffle();
+        } else if (x == R.id.btn2) {
+            findViewById(tvIds[mode]).setBackgroundColor(Color.WHITE);
+            mode = 0;
+            findViewById(tvIds[mode]).setBackgroundColor(Color.RED);
+            soundPool.play(soundReach, 1.0f, 1.0f, 0, 0, 1);
+        } else if (x == R.id.btn3) {
+            soundPool.play(soundNormal, 1.0f, 1.0f, 0, 0, 1);
+        } else if (x == R.id.btn4) {
+            soundPool.play(soundReach, 1.0f, 1.0f, 0, 0, 1);
+        } else if (x == R.id.btn5) {
+            soundPool.play(soundFanfare, 1.0f, 1.0f, 0, 0, 1);
+        } else if (x == R.id.btn6) {
+            soundPool.play(soundFever, 1.0f, 1.0f, 0, 0, 1);
+        }
+
+        /* if-else 文に変更
         switch (v.getId()) {
             case R.id.btn1:
                 shuffle();
@@ -272,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+         */
     }
 
     @Override

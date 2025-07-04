@@ -4,14 +4,15 @@ plugins {
 def applicationName = "excitesim"
 
 android {
-    compileSdk 32
+    namespace = "com.github.digihori.excitesim"
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.github.digihori.excitesim"
         minSdk 26
-        targetSdk 32
-        versionCode 5
-        versionName "1.01"
+        targetSdk 35
+        versionCode 8
+        versionName "2.00"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "${applicationName}-${versionName}"
